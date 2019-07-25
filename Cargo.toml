@@ -1,0 +1,9 @@
+[package]
+name = "raytracing"
+version = "0.1.0"
+authors = ["eiowlta <cassandra.l.mccord@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+png="0.15.0"
+impl_ops="0.1.1"
