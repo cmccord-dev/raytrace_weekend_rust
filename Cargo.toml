@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 png="0.15.0"
 impl_ops="0.1.1"
+rand="0.7.0"
