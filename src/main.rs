@@ -5,8 +5,8 @@ use std::path::Path;
 extern crate impl_ops;
 //use png::(BitDepth,ColorType);
 
-pub const WIDTH: usize = 200;
-pub const HEIGHT: usize = 100;
+pub const WIDTH: usize = 800;
+pub const HEIGHT: usize = 600;
 
 mod camera;
 mod image;

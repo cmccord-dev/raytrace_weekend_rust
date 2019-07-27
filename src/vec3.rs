@@ -61,6 +61,16 @@ impl Vec3 {
     pub fn reflect(&self, n: &Vec3) -> Vec3 {
         self - 2.0 * self.dot(n) * n
     }
+    pub fn refract(&self, n: &Vec3, ni_over_nt: f32) -> Option<Vec3> {
+        let v = self.norm();
+        let dt = v.dot(n);
+        let discr = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
+        if discr > 0.0 {
+            Some(ni_over_nt * (v - n * dt) - n * discr.sqrt())
+        } else {
+            None
+        }
+    }
 }
 impl From<[f32; 3]> for Vec3 {
     #[inline]
@@ -97,6 +107,8 @@ impl_op_ex!(+= |a: &mut Vec3, b: &Vec3| {a.x+=b.x;a.y+=b.y;a.z+=b.z;});
 impl_op_ex!(-= |a: &mut Vec3, b: &Vec3| {a.x-=b.x;a.y-=b.y;a.z-=b.z;});
 impl_op_ex!(*= |a: &mut Vec3, b: &Vec3| {a.x*=b.x;a.y*=b.y;a.z*=b.z;});
 impl_op_ex!(/= |a: &mut Vec3, b: &Vec3| {a.x/=b.x;a.y/=b.y;a.z/=b.z;});
+
+impl_op_ex!(- |a: &Vec3| -> Vec3{Vec3{x:-a.x,y:-a.y,z:-a.z}});
 
 impl_op_ex!(+= |a: &mut Vec3, b: f32| {a.x+=b;a.y+=b;a.z+=b;});
 impl_op_ex!(-= |a: &mut Vec3, b: f32| {a.x-=b;a.y-=b;a.z-=b;});
@@ -167,13 +179,13 @@ mod tests {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3::new(2.0, 3.0, 4.0);
 
-        assert!(nearly_equal(v1.dot(v2), 20.0));
+        assert!(nearly_equal(v1.dot(&v2), 20.0));
     }
     #[test]
     fn test_dot_2() {
         let v1 = Vec3::new(1.0, 2.0, 3.0);
         let v2 = Vec3::new(2.0, 3.0, 4.0);
-        assert!(nearly_equal(v1.dot(v2), v2.dot(v1)));
+        assert!(nearly_equal(v1.dot(&v2), v2.dot(&v1)));
     }
     #[test]
     fn test_norm() {
@@ -191,8 +203,8 @@ mod tests {
     fn test_lerp() {
         assert_eq!(
             Vec3::lerp(
-                Vec3::from([1.0, 1.0, 1.0]),
-                Vec3::from([0.5, 0.7, 1.0]),
+                &Vec3::from([1.0, 1.0, 1.0]),
+                &Vec3::from([0.5, 0.7, 1.0]),
                 1.0
             ),
             Vec3::from([0.5, 0.7, 1.0])
@@ -202,8 +214,8 @@ mod tests {
     fn test_lerp_2() {
         assert_eq!(
             Vec3::lerp(
-                Vec3::from([1.0, 1.0, 1.0]),
-                Vec3::from([0.5, 0.7, 1.0]),
+                &Vec3::from([1.0, 1.0, 1.0]),
+                &Vec3::from([0.5, 0.7, 1.0]),
                 0.0
             ),
             Vec3::from([1.0, 1.0, 1.0])

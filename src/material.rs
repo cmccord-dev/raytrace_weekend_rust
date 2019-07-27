@@ -4,6 +4,7 @@ use crate::ray::Ray;
 
 pub mod lambertian;
 pub mod metal;
+pub mod dielectric;
 
 pub struct Scatter {
     pub attenuation: Vec3,

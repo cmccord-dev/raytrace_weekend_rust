@@ -3,6 +3,7 @@ use crate::image::Image;
 
 use crate::material::lambertian::Lambertian;
 use crate::material::metal::Metal;
+use crate::material::dielectric::Dielectric;
 use crate::object::sphere::Sphere;
 
 use crate::object::{Hit, Object};
@@ -13,7 +14,7 @@ use rand::Rng;
 use std::f32;
 use std::rc::Rc;
 
-const SAMPLES: i32 = 100;
+const SAMPLES: i32 = 50;
 
 fn build_scene() -> Vec<Box<Object>> {
     vec![
@@ -35,7 +36,12 @@ fn build_scene() -> Vec<Box<Object>> {
         Box::new(Sphere::new(
             Vec3::new(-1.0, 0.0, -1.0),
             0.5,
-            Rc::new(Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0)),
+            Rc::new(Dielectric::new(1.5)),
+        )),
+        Box::new(Sphere::new(
+            Vec3::new(-1.0, 0.0, -1.0),
+            -0.45,
+            Rc::new(Dielectric::new(1.5)),
         )),
     ]
 }
