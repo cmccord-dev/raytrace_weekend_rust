@@ -7,10 +7,10 @@ use std::rc::Rc;
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
-    pub material: Rc<Material>,
+    pub material: Box<Material>,
 }
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32, material: Rc<Material>) -> Sphere {
+    pub fn new(center: Vec3, radius: f32, material: Box<Material>) -> Sphere {
         Sphere {
             center,
             radius,
@@ -32,7 +32,7 @@ impl Object for Sphere {
                     t,
                     p: ray.at_parameter(t),
                     normal: (ray.at_parameter(t) - self.center) / self.radius,
-                    material: self.material.clone(),
+                    material: &self.material,
                 });
             }
             let t = (-b + discr.sqrt()) / (2.0 * a);
@@ -41,7 +41,7 @@ impl Object for Sphere {
                     t,
                     p: ray.at_parameter(t),
                     normal: (ray.at_parameter(t) - self.center) / self.radius,
-                    material: self.material.clone(),
+                    material: &self.material,
                 });
             }
         }

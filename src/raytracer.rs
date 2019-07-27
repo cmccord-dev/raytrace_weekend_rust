@@ -21,27 +21,27 @@ fn build_scene() -> Vec<Box<Object>> {
         Box::new(Sphere::new(
             Vec3::new(0.0, 0.0, -1.0),
             0.5,
-            Rc::new(Lambertian::new(Vec3::new(0.8, 0.3, 0.3))),
+            Box::new(Lambertian::new(Vec3::new(0.8, 0.3, 0.3))),
         )),
         Box::new(Sphere::new(
             Vec3::new(0.0, -100.5, -1.0),
             100.0,
-            Rc::new(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
+            Box::new(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
         )),
         Box::new(Sphere::new(
             Vec3::new(1.0, 0.0, -1.0),
             0.5,
-            Rc::new(Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)),
+            Box::new(Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)),
         )),
         Box::new(Sphere::new(
             Vec3::new(-1.0, 0.0, -1.0),
             0.5,
-            Rc::new(Dielectric::new(1.5)),
+            Box::new(Dielectric::new(1.5)),
         )),
         Box::new(Sphere::new(
             Vec3::new(-1.0, 0.0, -1.0),
             -0.45,
-            Rc::new(Dielectric::new(1.5)),
+            Box::new(Dielectric::new(1.5)),
         )),
     ]
 }
@@ -77,7 +77,7 @@ pub fn raytrace(image: &mut Image) {
     println!("Done!");
 }
 
-fn get_hit(ray: &Ray, objs: &Vec<Box<Object>>) -> Option<Hit> {
+fn get_hit<'a>(ray: &Ray, objs: &'a Vec<Box<Object>>) -> Option<Hit<'a>> {
     objs.iter()
         .map(|obj| (*obj).hits(ray, 0.001, f32::MAX))
         .filter_map(|hit| hit)
