@@ -19,10 +19,11 @@ impl Dielectric {
 impl Material for Dielectric {
     fn scatter(&self, ray_in: &Ray, hit: &Hit) -> Option<Scatter> {
         let (normal, ni_over_nt, cosine) = if ray_in.dir.dot(&hit.normal) > 0.0 {
+            let cosine = ray_in.dir.dot(&hit.normal);
             (
                 -hit.normal,
                 self.ref_idx,
-                self.ref_idx * ray_in.dir.dot(&hit.normal),
+                (1.0-self.ref_idx*self.ref_idx*(1.0-cosine*cosine)).sqrt()
             )
         } else {
             (hit.normal, 1.0 / self.ref_idx, -ray_in.dir.dot(&hit.normal))

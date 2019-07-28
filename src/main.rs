@@ -4,9 +4,8 @@ use std::path::Path;
 #[macro_use]
 extern crate impl_ops;
 //use png::(BitDepth,ColorType);
-
-pub const WIDTH: usize = 800;
-pub const HEIGHT: usize = 600;
+use crate::raytracer::WIDTH;
+use crate::raytracer::HEIGHT;
 
 mod camera;
 mod image;

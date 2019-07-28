@@ -11,6 +11,6 @@ pub struct Scatter {
     pub scattered: Ray,
 }
 
-pub trait Material {
+pub trait Material: std::marker::Sync {
     fn scatter(&self, ray_in: &Ray, hit: &Hit) -> Option<Scatter>;
 }

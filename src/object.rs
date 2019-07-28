@@ -11,6 +11,6 @@ pub struct Hit<'a> {
     pub normal: Vec3,
     pub material: &'a Box<Material+'a>,
 }
-pub trait Object {
+pub trait Object: std::marker::Sync {
     fn hits(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<Hit>;
 }

@@ -21,6 +21,13 @@ impl Vec3 {
     pub fn dot(&self, v: &Vec3) -> f32 {
         self.x * v.x + self.y * v.y + self.z * v.z
     }
+    pub fn cross(&self, v: &Vec3) -> Vec3 {
+        Vec3{
+            x:self.y*v.z - self.z*v.y,
+            y:self.x*v.x - self.x*v.z,
+            z:self.x*v.y - self.y*v.x
+        }
+    }
     #[inline]
     pub fn len_sq(&self) -> f32 {
         self.dot(&self)
@@ -53,10 +60,25 @@ impl Vec3 {
     }
 
     pub fn random_in_unit_sphere() -> Vec3 {
-        let r = rand::thread_rng().gen::<f32>();
+        let mut v = 2.0*Vec3::new(rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>()) - Vec3::from(1.0);
+        while v.len_sq() > 1.0 {
+            v = 2.0*Vec3::new(rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>()) - Vec3::from(1.0);
+        }
+        v
+        /*let r = rand::thread_rng().gen::<f32>();
         let theta = rand::thread_rng().gen::<f32>() * f32::consts::PI * 2.0;
         let rho = rand::thread_rng().gen::<f32>() * f32::consts::PI;
-        Vec3::from_spherical(r, theta, rho)
+        Vec3::from_spherical(r, theta, rho)*/
+    }
+    pub fn random_in_unit_disk() -> Vec3 {
+        let mut v = 2.0*Vec3::new(rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>(),0.0) - Vec3::new(1.0,1.0,0.0);
+        while v.len_sq() > 1.0 {
+            v = 2.0*Vec3::new(rand::thread_rng().gen::<f32>(),rand::thread_rng().gen::<f32>(),0.0) - Vec3::new(1.0,1.0,0.0);
+        }
+        v
+        /*let r = rand::thread_rng().gen::<f32>();
+        let theta = rand::thread_rng().gen::<f32>() * f32::consts::PI * 2.0;
+        Vec3::from_spherical(r, theta, 0.0)*/
     }
     pub fn reflect(&self, n: &Vec3) -> Vec3 {
         self - 2.0 * self.dot(n) * n
