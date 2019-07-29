@@ -9,15 +9,29 @@ use crate::raytracer::HEIGHT;
 
 mod camera;
 mod image;
-
+mod world;
 mod material;
 mod object;
 mod ray;
 mod raytracer;
 mod vec3;
+mod aabb;
+mod bvh;
+use material::*;
+use material::lambertian::*;
+use material::metal::*;
+use material::dielectric::*;
+use object::*;
+use object::sphere::*;
+use vec3::*;
+use ray::*;
+use camera::*;
+use aabb::*;
+use world::*;
+use bvh::*;
+
 
 use image::Image;
-use vec3::Vec3;
 fn main() {
     println!("Hello, world!");
     let mut image: Image = vec![vec![Vec3::new(0., 0., 0.); WIDTH]; HEIGHT];

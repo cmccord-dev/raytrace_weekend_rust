@@ -18,6 +18,14 @@ impl Vec3 {
         Vec3 { x: f, y: f, z: f }
     }
     #[inline]
+    pub fn axis(&self, axis:i32) -> f32 {
+        match axis {
+            0=>self.x,
+            1=>self.y,
+            _=>self.z
+        }
+    }
+    #[inline]
     pub fn dot(&self, v: &Vec3) -> f32 {
         self.x * v.x + self.y * v.y + self.z * v.z
     }
@@ -161,7 +169,6 @@ mod tests {
         let abs_a = a.abs();
         let abs_b = b.abs();
         let diff = (a - b).abs();
-        f32::MIN_POSITIVE;
         if a == b {
             // Handle infinities.
             true

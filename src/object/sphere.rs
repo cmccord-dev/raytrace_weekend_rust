@@ -1,14 +1,14 @@
-use crate::material::Material;
-use crate::object::{Hit, Object};
-use crate::ray::Ray;
-use crate::vec3::Vec3;
-use std::rc::Rc;
-
+use crate::Material;
+use crate::{Hit, Object};
+use crate::Ray;
+use crate::Vec3;
+use crate::AABB;
 
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
     pub material: Box<Material>,
+    bounds: Option<AABB>,
 }
 impl Sphere {
     pub fn new(center: Vec3, radius: f32, material: Box<Material>) -> Sphere {
@@ -16,10 +16,14 @@ impl Sphere {
             center,
             radius,
             material,
+            bounds:Some(AABB::new(center - Vec3::from(radius), center + Vec3::from(radius)))
         }
     }
 }
 impl Object for Sphere {
+    fn bounding_box(&self, _: f32, _: f32) -> Option<AABB> {
+        self.bounds
+    }
     fn hits(&self, ray: &Ray, t_min: f32, t_max: f32) -> Option<Hit> {
         let oc = ray.src - self.center;
         let a = ray.dir.dot(&ray.dir);

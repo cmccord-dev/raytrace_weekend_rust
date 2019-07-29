@@ -1,6 +1,6 @@
-use crate::object::Hit;
-use crate::vec3::Vec3;
-use crate::ray::Ray;
+use crate::Hit;
+use crate::Vec3;
+use crate::Ray;
 
 pub mod lambertian;
 pub mod metal;

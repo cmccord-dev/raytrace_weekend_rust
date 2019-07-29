@@ -1,7 +1,7 @@
-use crate::material::{Material, Scatter};
-use crate::object::Hit;
-use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::{Material, Scatter};
+use crate::Hit;
+use crate::Ray;
+use crate::Vec3;
 pub struct Lambertian {
     albedo: Vec3,
 }

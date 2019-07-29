@@ -1,6 +1,8 @@
-use crate::ray::Ray;
-use crate::vec3::Vec3;
+use crate::Ray;
+use crate::Vec3;
 use std::f32;
+
+#[allow(dead_code)]
 pub struct Camera {
     left_corner: Vec3,
     horizontal: Vec3,
