@@ -3,6 +3,7 @@ use crate::{Hit, Object};
 use crate::Ray;
 use crate::Vec3;
 use crate::AABB;
+use std::f32;
 
 pub struct Sphere {
     pub center: Vec3,
@@ -19,6 +20,12 @@ impl Sphere {
             bounds:Some(AABB::new(center - Vec3::from(radius), center + Vec3::from(radius)))
         }
     }
+    fn uv(&self, p: &Vec3) -> (f32, f32) {
+        let p = (p - self.center)/self.radius;
+        let phi = f32::atan2(p.y, p.x);
+        let theta = f32::asin(p.z);
+        (phi / (2.0*f32::consts::PI), theta / f32::consts::PI)
+    }
 }
 impl Object for Sphere {
     fn bounding_box(&self, _: f32, _: f32) -> Option<AABB> {
@@ -30,23 +37,30 @@ impl Object for Sphere {
         let b = 2.0 * oc.dot(&ray.dir);
         let c = oc.dot(&oc) - self.radius * self.radius;
         let discr = b * b - 4.0 * a * c;
+        
         if discr >= 0.0 {
             let t = (-b - discr.sqrt()) / (2.0 * a);
             if t > t_min && t < t_max {
+                let p = ray.at_parameter(t);
+                let (u,v) = self.uv(&p);
                 return Some(Hit {
                     t,
-                    p: ray.at_parameter(t),
+                    p: p,
                     normal: (ray.at_parameter(t) - self.center) / self.radius,
                     material: &self.material,
+                    u,v
                 });
             }
             let t = (-b + discr.sqrt()) / (2.0 * a);
             if t > t_min && t < t_max {
+                let p = ray.at_parameter(t);
+                let (u,v) = self.uv(&p);
                 return Some(Hit {
                     t,
-                    p: ray.at_parameter(t),
+                    p: p,
                     normal: (ray.at_parameter(t) - self.center) / self.radius,
                     material: &self.material,
+                    u,v
                 });
             }
         }

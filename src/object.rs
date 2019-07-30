@@ -8,6 +8,8 @@ pub struct Hit<'a> {
     pub t: f32,
     pub p: Vec3,
     pub normal: Vec3,
+    pub u: f32,
+    pub v: f32,
     pub material: &'a Box<Material + 'a>,
 }
 pub trait Object: std::marker::Sync {

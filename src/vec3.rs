@@ -250,4 +250,10 @@ mod tests {
             Vec3::from([1.0, 1.0, 1.0])
         );
     }
+    #[test]
+    fn test_from() {
+        let v = Vec3::from(1.0);
+        assert_eq!(v.x, v.y);
+        assert_eq!(v.y, v.z);
+    }
 }

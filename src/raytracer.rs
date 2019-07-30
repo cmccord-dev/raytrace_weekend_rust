@@ -1,5 +1,3 @@
-use crate::Camera;
-use crate::Image;
 
 use crate::World;
 use crate::Ray;
@@ -11,31 +9,17 @@ use std::f32;
 use indicatif::ProgressBar;
 use rayon::prelude::*;
 
-const SAMPLES: i32 = 32;
-pub const WIDTH: usize = 1920;
-pub const HEIGHT: usize = 1080;
+const SAMPLES: i32 = 10;
+pub const WIDTH: usize = 1024;
+pub const HEIGHT: usize = 768;
 
 
-pub fn raytrace(image: &mut Image) {
+pub fn raytrace(image: &mut Vec<Vec<Vec3>>) {
     let width = image[0].len();
     let height = image.len();
     let aspect = (width as f32) / (height as f32);
-    let from = Vec3::new(13.0, 2.0, 3.0);
-    //let from = Vec3::new(0.0,0.0,0.0);
-    let to = Vec3::new(0.0, 2.0, 0.0);
-    //let dist_to_focus = (to - from).len();
-    let dist_to_focus = 10.0;
-    let aperature = 0.1;
-    let camera = Camera::new(
-        from,
-        to,
-        Vec3::new(0.0, 1.0, 0.0),
-        20.0,
-        aspect,
-        aperature,
-        dist_to_focus,
-    );
-    let world = World::build_random_scene(0.01, f32::MAX);
+    //let (world, camera) = World::build_random_scene(0.01, f32::MAX, aspect);
+    let (world, camera) = World::two_perlin_spheres(0.01, f32::MAX, aspect);
     //let world = build_scene();
     let world = &world;
     println!("Width: {}\nHeight: {}", width, height);

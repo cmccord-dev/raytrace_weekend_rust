@@ -12,7 +12,11 @@ use crate::AABB;
 use rand::Rng;
 use std::f32;
 use crate::BVH;
-
+use crate::ConstantTexture;
+use crate::CheckerTexture;
+use crate::Camera;
+use crate::NoiseTexture;
+use std::sync::Arc;
 
 pub struct World {
     //pub objs: Vec<Box<Object>>,
@@ -42,7 +46,7 @@ impl World {
 
         Self { bvh:BVH::new(objs, t0, t1) }
     }
-    pub fn build_random_scene(t0:f32, t1:f32) -> World {
+    pub fn build_random_scene(t0:f32, t1:f32, aspect: f32) -> (World, Camera) {
         let rand = || rand::thread_rng().gen::<f32>();
         let mut list: Vec<Box<Object>> = (-11..11)
             .flat_map(|a| {
@@ -52,11 +56,11 @@ impl World {
                         Vec3::new((a as f32) + 0.9 * rand(), 0.2, (b as f32) + 0.9 * rand());
                     if (center - Vec3::new(4.0, 0.2, 0.0)).len() > 0.9 {
                         let mat: Box<Material> = if choose < 0.8 {
-                            Box::new(Lambertian::new(Vec3::new(
+                            Box::new(Lambertian::new(Arc::new(ConstantTexture::new(Vec3::new(
                                 rand() * rand(),
                                 rand() * rand(),
                                 rand() * rand(),
-                            )))
+                            )))))
                         } else if choose < 0.95 {
                             Box::new(Metal::new(
                                 Vec3::new(
@@ -81,7 +85,10 @@ impl World {
         list.push(Box::new(Sphere::new(
             Vec3::new(0.0, -1000.0, 0.0),
             1000.0,
-            Box::new(Lambertian::new(Vec3::new(0.5, 0.5, 0.5))),
+            Box::new(Lambertian::new(Arc::new(CheckerTexture::new(
+                Arc::new(ConstantTexture::new(Vec3::new(0.2,0.3,0.1))),
+                Arc::new(ConstantTexture::new(Vec3::new(0.9,0.9,0.9)))
+            )))),
         )));
         list.push(Box::new(Sphere::new(
             Vec3::new(0.0, 1.0, 0.0),
@@ -91,13 +98,47 @@ impl World {
         list.push(Box::new(Sphere::new(
             Vec3::new(-4.0, 1.0, 0.0),
             1.0,
-            Box::new(Lambertian::new(Vec3::new(0.4, 0.2, 0.1))),
+            Box::new(Lambertian::new(Arc::new(ConstantTexture::new(Vec3::new(0.4, 0.2, 0.1))))),
         )));
         list.push(Box::new(Sphere::new(
             Vec3::new(4.0, 1.0, 0.0),
             1.0,
             Box::new(Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)),
         )));
-        World::new(list, t0, t1)
+
+        
+    let from = Vec3::new(13.0, 2.0, 3.0);
+    //let from = Vec3::new(0.0,0.0,0.0);
+    let to = Vec3::new(0.0, 2.0, 0.0);
+    let dist_to_focus = (to - from).len();
+    //let dist_to_focus = 10.0;
+    let aperature = 0.01;
+     (World::new(list, t0, t1), Camera::new(
+        from,
+        to,
+        Vec3::new(0.0, 1.0, 0.0),
+        20.0,
+        aspect,
+        aperature,
+        dist_to_focus,
+    ))  
+    }
+
+    pub fn two_perlin_spheres(t0:f32, t1:f32, aspect:f32) -> (World, Camera) {
+        let pertext = Arc::new(NoiseTexture::new(10.0));
+        let from = Vec3::new(13.0, 2.0, 3.0);
+        let to = Vec3::from(0.0);
+        let focus = 10.0;
+        let aperature = 0.0;
+        (World::new(vec![
+            Box::new(Sphere::new(
+                Vec3::new(0.0, -1000.0, 0.0), 1000.0,
+                Box::new(Lambertian::new(pertext.clone()))
+            )),
+            Box::new(Sphere::new(
+                Vec3::new(0.0, 2.0, 0.0), 2.0,
+                Box::new(Lambertian::new(pertext.clone()))
+            ))
+        ], t0, t1), Camera::new(from, to, Vec3::new(0.0, 1.0, 0.0), 20.0, aspect, aperature, focus))
     }
 }
