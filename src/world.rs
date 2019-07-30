@@ -11,35 +11,38 @@ use crate::Vec3;
 use crate::AABB;
 use rand::Rng;
 use std::f32;
+use crate::BVH;
 
 
 pub struct World {
-    pub objs: Vec<Box<Object>>,
+    //pub objs: Vec<Box<Object>>,
+    pub bvh : Box<BVH>
 }
 
 impl Object for World {
     fn bounding_box(&self, t0: f32, t1: f32) -> Option<AABB>{
-        let mut boxes = self.objs.iter().filter_map(|x| x.bounding_box(t0, t1));
+        /*let mut boxes = self.objs.iter().filter_map(|x| x.bounding_box(t0, t1));
         boxes.next().map(|first| boxes.fold(first, |p,c| {
             p.merge(&c)
-        }))
+        }))*/
+        self.bvh.bounding_box(t0, t1)
     }
     fn hits<'a>(&'a self, ray: &Ray, t_min: f32, t_max: f32) -> Option<Hit<'a>> {
-
-        self.objs
+        self.bvh.hits(ray, t_min, t_max)
+        /*self.objs
             .iter()
             //.map(|obj| (*obj).hits(ray, 0.01, f32::MAX))
             .filter_map(|obj| (*obj).hits(ray, t_min.max(0.01), t_max))
-            .min_by(|a, b| a.t.partial_cmp(&b.t).unwrap_or(std::cmp::Ordering::Equal))
+            .min_by(|a, b| a.t.partial_cmp(&b.t).unwrap_or(std::cmp::Ordering::Equal))*/
     }
 }
 
 impl World {
-    pub fn new(objs: Vec<Box<Object>>) -> Self {
+    pub fn new(objs: Vec<Box<Object>>, t0: f32, t1: f32) -> Self {
 
-        Self { objs }
+        Self { bvh:BVH::new(objs, t0, t1) }
     }
-    pub fn build_random_scene() -> World {
+    pub fn build_random_scene(t0:f32, t1:f32) -> World {
         let rand = || rand::thread_rng().gen::<f32>();
         let mut list: Vec<Box<Object>> = (-11..11)
             .flat_map(|a| {
@@ -95,6 +98,6 @@ impl World {
             1.0,
             Box::new(Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)),
         )));
-        World { objs: list }
+        World::new(list, t0, t1)
     }
 }

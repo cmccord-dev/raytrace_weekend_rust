@@ -11,7 +11,7 @@ use std::f32;
 use indicatif::ProgressBar;
 use rayon::prelude::*;
 
-const SAMPLES: i32 = 10;
+const SAMPLES: i32 = 32;
 pub const WIDTH: usize = 1920;
 pub const HEIGHT: usize = 1080;
 
@@ -35,7 +35,7 @@ pub fn raytrace(image: &mut Image) {
         aperature,
         dist_to_focus,
     );
-    let world = World::build_random_scene();
+    let world = World::build_random_scene(0.01, f32::MAX);
     //let world = build_scene();
     let world = &world;
     println!("Width: {}\nHeight: {}", width, height);
