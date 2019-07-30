@@ -8,7 +8,7 @@ use std::f32;
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
-    pub material: Box<Material>,
+    pub material: Box<Material>,    
     bounds: Option<AABB>,
 }
 impl Sphere {
@@ -22,9 +22,18 @@ impl Sphere {
     }
     fn uv(&self, p: &Vec3) -> (f32, f32) {
         let p = (p - self.center)/self.radius;
-        let phi = f32::atan2(p.y, p.x);
-        let theta = f32::asin(p.z);
-        (phi / (2.0*f32::consts::PI), theta / f32::consts::PI)
+        let mut phi = f32::atan2(p.z, p.x);
+        if p.x < 0.0 {
+            if p.z >= 0.0 {
+                phi = phi - f32::consts::PI;
+            }else{
+                phi = phi + f32::consts::PI;
+            }
+        }
+        let theta = f32::asin(p.y);
+        let uv = (1.0 - (phi + f32::consts::PI) / (2.0*f32::consts::PI), (theta+f32::consts::PI/2.0) / f32::consts::PI);
+        //println!("{:?},{:?}", phi / f32::consts::PI, uv);
+        uv
     }
 }
 impl Object for Sphere {
@@ -46,7 +55,7 @@ impl Object for Sphere {
                 return Some(Hit {
                     t,
                     p: p,
-                    normal: (ray.at_parameter(t) - self.center) / self.radius,
+                    normal: (p - self.center) / self.radius,
                     material: &self.material,
                     u,v
                 });
@@ -58,7 +67,7 @@ impl Object for Sphere {
                 return Some(Hit {
                     t,
                     p: p,
-                    normal: (ray.at_parameter(t) - self.center) / self.radius,
+                    normal: (p - self.center) / self.radius,
                     material: &self.material,
                     u,v
                 });

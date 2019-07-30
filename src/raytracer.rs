@@ -9,9 +9,9 @@ use std::f32;
 use indicatif::ProgressBar;
 use rayon::prelude::*;
 
-const SAMPLES: i32 = 10;
-pub const WIDTH: usize = 1024;
-pub const HEIGHT: usize = 768;
+const SAMPLES: i32 = 1;
+pub const WIDTH: usize = 800;
+pub const HEIGHT: usize = 600;
 
 
 pub fn raytrace(image: &mut Vec<Vec<Vec3>>) {
@@ -24,7 +24,7 @@ pub fn raytrace(image: &mut Vec<Vec<Vec3>>) {
     let world = &world;
     println!("Width: {}\nHeight: {}", width, height);
     let bar = ProgressBar::new((height) as u64);
-    image.par_iter_mut().enumerate().for_each(|(j,row)| {
+    image.iter_mut().enumerate().for_each(|(j,row)| {
         let mut rng = rand::thread_rng();
         for (i, vec) in row.iter_mut().enumerate() {
             *vec = (0..SAMPLES)

@@ -46,17 +46,18 @@ impl Perlin {
         let v = p.y - p.y.floor();
         let w = p.z - p.z.floor();
         let (i, j, k) = {
-            (p.x.floor() as usize, p.y.floor() as usize, p.z.floor() as usize)
+            (p.x.floor() as i32, p.y.floor() as i32, p.z.floor() as i32)
         };
+        //println!("{}, {:?}",k, p);
         let c = (0..2)
             .map(|di| {
                 (0..2)
                     .map(move |dj| {
                         (0..2)
                             .map(move |dk| {
-                                self.ran_float[(self.x[(i + di) & 255]
-                                    ^ self.y[(j + dj) & 255]
-                                    ^ self.z[(k + dk) & 255])]
+                                self.ran_float[(self.x[(i + di) as usize & 255]
+                                    ^ self.y[(j + dj) as usize & 255]
+                                    ^ self.z[(k + dk) as usize & 255])]
                             })
                             .collect::<Vec<Vec3>>()
                     })

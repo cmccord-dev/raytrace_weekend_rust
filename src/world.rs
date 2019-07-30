@@ -16,6 +16,7 @@ use crate::ConstantTexture;
 use crate::CheckerTexture;
 use crate::Camera;
 use crate::NoiseTexture;
+use crate::ImageTexture;
 use std::sync::Arc;
 
 pub struct World {
@@ -137,7 +138,7 @@ impl World {
             )),
             Box::new(Sphere::new(
                 Vec3::new(0.0, 2.0, 0.0), 2.0,
-                Box::new(Lambertian::new(pertext.clone()))
+                Box::new(Lambertian::new(Arc::new(ImageTexture::new("earthmap.jpg"))))
             ))
         ], t0, t1), Camera::new(from, to, Vec3::new(0.0, 1.0, 0.0), 20.0, aspect, aperature, focus))
     }

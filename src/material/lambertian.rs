@@ -16,7 +16,7 @@ impl Lambertian {
 impl Material for Lambertian {
     fn scatter(&self, _ray_in: &Ray, hit: &Hit) -> Option<Scatter> {
         let target = hit.p + hit.normal + Vec3::random_in_unit_sphere();
-        let albedo = self.albedo.value(0.0,0.0, &hit.p);
+        let albedo = self.albedo.value(hit.u,hit.v, &hit.p);
         Some(Scatter {
             scattered: Ray::new(hit.p, target - hit.p),
             attenuation: albedo,

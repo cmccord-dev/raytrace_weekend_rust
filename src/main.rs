@@ -31,6 +31,7 @@ use texture::*;
 use texture::constant_texture::*;
 use texture::checker_texture::*;
 use texture::noise_texture::*;
+use texture::image_texture::*;
 
 fn main() {
     println!("Hello, world!");
